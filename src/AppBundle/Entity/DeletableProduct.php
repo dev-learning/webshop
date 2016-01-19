@@ -4,6 +4,8 @@ namespace AppBundle\Entity;
 
 trait DeletableProduct
 {
+    use ProductProperties;
+
     /**
      * @return DeletedProduct
      */
