@@ -2,60 +2,23 @@
 
 namespace AppBundle\Entity;
 
-class Product
+abstract class Product
 {
     /**
      * @var string
      */
-    private $status;
+    private $name;
 
-    public function __construct()
+    public function __construct($name)
     {
-        $this->status = ProductStatus::SUSPENDED;
+        $this->name = $name;
     }
 
     /**
      * @return string
      */
-    public function getStatus()
+    public function getName()
     {
-        return $this->status;
-    }
-
-    /**
-     * @return Product
-     * @throws \Exception
-     */
-    public function resume()
-    {
-        if ($this->status == ProductStatus::DELETED) {
-            throw new \Exception('A deleted product cannot be resumed');
-        }
-
-        $this->status = ProductStatus::ONLINE;
-        return $this;
-    }
-
-    /**
-     * @return Product
-     * @throws \Exception
-     */
-    public function suspend()
-    {
-        if ($this->status == ProductStatus::DELETED) {
-            throw new \Exception('A deleted product cannot be suspended');
-        }
-
-        $this->status = ProductStatus::SUSPENDED;
-        return $this;
-    }
-
-    /**
-     * @return Product
-     */
-    public function delete()
-    {
-        $this->status = ProductStatus::DELETED;
-        return $this;
+        return $this->name;
     }
 }
