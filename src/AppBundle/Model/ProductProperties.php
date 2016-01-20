@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: bahtiyar
- * Date: 19-1-16
- * Time: 17:32
- */
 
-namespace AppBundle\Entity;
-
+namespace AppBundle\Model;
 
 trait ProductProperties
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace AppBundle\Entity;
+namespace AppBundle\Model;
 
-class SuspendedProduct extends Product
+trait ResumableProduct
 {
-    use DeletableProduct;
+    use ProductProperties;
 
     /**
      * @return OnlineProduct
