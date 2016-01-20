@@ -2,60 +2,134 @@
 
 namespace AppBundle\Entity;
 
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="product")
+ */
 class Product
 {
     /**
-     * @var string
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $status;
+    protected $id;
 
-    public function __construct()
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    protected $name;
+
+    /**
+     * @ORM\Column(type="decimal", scale=2)
+     */
+    protected $price;
+
+    /**
+     * @ORM\Column(type="decimal", scale=2)
+     */
+    protected $salePrice;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    protected $description;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
     {
-        $this->status = ProductStatus::SUSPENDED;
+        return $this->id;
     }
 
     /**
-     * @return string
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
+     * @param mixed $id
      * @return Product
-     * @throws \Exception
      */
-    public function resume()
+    public function setId($id)
     {
-        if ($this->status == ProductStatus::DELETED) {
-            throw new \Exception('A deleted product cannot be resumed');
-        }
-
-        $this->status = ProductStatus::ONLINE;
+        $this->id = $id;
         return $this;
     }
 
     /**
-     * @return Product
-     * @throws \Exception
+     * @return mixed
      */
-    public function suspend()
+    public function getName()
     {
-        if ($this->status == ProductStatus::DELETED) {
-            throw new \Exception('A deleted product cannot be suspended');
-        }
+        return $this->name;
+    }
 
-        $this->status = ProductStatus::SUSPENDED;
+    /**
+     * @param mixed $name
+     * @return Product
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
         return $this;
     }
 
     /**
+     * @return mixed
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * @param mixed $price
      * @return Product
      */
-    public function delete()
+    public function setPrice($price)
     {
-        $this->status = ProductStatus::DELETED;
+        $price = str_replace([' ', ','], ['', '.'], $price);
+        $this->price = number_format($price, 2);
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSalePrice()
+    {
+        return $this->salePrice;
+    }
+
+    /**
+     * @param mixed $salePrice
+     * @return Product
+     */
+    public function setSalePrice($salePrice)
+    {
+        $salePrice = str_replace([' ', ','], ['', '.'], $salePrice);
+        $salePrice = number_format($salePrice, 2);
+
+        if ($this->getPrice() != null || $salePrice > 0 || $salePrice < $this->getPrice())
+        {
+            $this->salePrice = $salePrice;
+        }
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param mixed $description
+     * @return Product
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
         return $this;
     }
 }

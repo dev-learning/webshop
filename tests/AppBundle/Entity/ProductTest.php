@@ -4,46 +4,41 @@ namespace AppBundle\Entity;
 
 class ProductTest extends \PHPUnit_Framework_TestCase
 {
-    public function testNewProductsAreSuspended()
+    public function testIfPriceReturnsATrueFormattedPrice()
     {
-        self::assertEquals('suspended', (new Product())->getStatus());
+        $price = (new Product())->setPrice(4)->getPrice();
+        self::assertEquals(4.00, $price);
+
+        $price = (new Product())->setPrice('4,54')->getPrice();
+        self::assertEquals(4.54, $price);
+
+        $price = (new Product())->setPrice('4.54')->getPrice();
+        self::assertEquals(4.54, $price);
     }
 
-    public function testSuspendedProductsCanBeResumed()
+    public function testIfSalePriceReturnsATrueFormattedSalePrice()
     {
-        $suspendedProduct = new Product();
-        self::assertEquals('online', $suspendedProduct->resume()->getStatus());
+        $price = (new Product())->setSalePrice(4)->getSalePrice();
+        self::assertEquals(4.00, $price);
+
+        $price = (new Product())->setSalePrice('4,54')->getSalePrice();
+        self::assertEquals(4.54, $price);
+
+        $price = (new Product())->setSalePrice('4.54')->getSalePrice();
+        self::assertEquals(4.54, $price);
     }
 
-    public function testOnlineProductsCanBeSuspended()
+    public function testIfSalePriceIsBiggerThanNullAndSmallerOrEqualsPrice()
     {
-        $onlineProduct = (new Product())->resume();
-        self::assertEquals('suspended', $onlineProduct->suspend()->getStatus());
-    }
+        $normalPrice = (new Product())->setPrice(4.95)->getPrice();
+        $salePrice = (new Product())->setSalePrice(4.95)->getSalePrice();
+        self::assertEquals($normalPrice, $salePrice);
 
-    public function testSuspendedProductsCanBeDeleted()
-    {
-        $suspendedProduct = new Product();
-        self::assertEquals('deleted', $suspendedProduct->delete()->getStatus());
-    }
+        $salePrice = (new Product())->setSalePrice(4.95)->getSalePrice();
+        self::assertFalse($salePrice);
 
-    public function testOnlineProductsCanBeDeleted()
-    {
-        $onlineProduct = (new Product())->resume();
-        self::assertEquals('deleted', $onlineProduct->delete()->getStatus());
-    }
-
-    public function testDeletedProductsCannotBeResumed()
-    {
-        self::setExpectedException(\Exception::class, 'A deleted product cannot be resumed');
-        $deletedProduct = (new Product())->delete();
-        $deletedProduct->resume();
-    }
-
-    public function testDeletedProductsCannotBeSuspended()
-    {
-        self::setExpectedException(\Exception::class, 'A deleted product cannot be suspended');
-        $deletedProduct = (new Product())->delete();
-        $deletedProduct->suspend();
+        $normalPrice = (new Product())->setPrice(4.94)->getPrice();
+        $salePrice = (new Product())->setSalePrice(4.95)->getSalePrice();
+        self::assertGreaterThanOrEqual($normalPrice, $salePrice);
     }
 }
