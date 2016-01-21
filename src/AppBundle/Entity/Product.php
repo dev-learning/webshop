@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 class Product
 {
     /**
@@ -9,9 +11,34 @@ class Product
      */
     private $status;
 
-    public function __construct()
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=100, unique=true)
+     */
+    private $name;
+
+    public function __construct($name)
     {
+        $this->name = $name;
         $this->status = ProductStatus::SUSPENDED;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return Product
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
     }
 
     /**
