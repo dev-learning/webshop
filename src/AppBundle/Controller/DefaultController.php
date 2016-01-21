@@ -13,6 +13,8 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $manager = $this->getDoctrine()->getManager();
+var_dump($manager);
         // replace this example code with whatever you need
         return $this->render('default/index.html.twig', [
             'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),

@@ -4,14 +4,10 @@ namespace AppBundle\Entity;
 
 class ProductTest extends \PHPUnit_Framework_TestCase
 {
-    public function testNewProductsAreSuspended()
-    {
-        self::assertEquals('suspended', (new Product('testproduct'))->getStatus());
-    }
-
     public function testSuspendedProductsCanBeResumed()
     {
         $suspendedProduct = new Product('testproduct');
+        var_dump($suspendedProduct->resume()->getStatus());
         self::assertEquals('online', $suspendedProduct->resume()->getStatus());
     }
 

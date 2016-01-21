@@ -4,10 +4,27 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+
+/**
+ * Class Product
+ * @package AppBundle\Entity
+ *
+ * @ORM\Entity
+ * @ORM\Table(name="product")
+ */
 class Product
 {
     /**
+     * @var integer
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
      * @var string
+     * @ORM\Column(type="string", length=20)
      */
     private $status;
 
@@ -17,18 +34,14 @@ class Product
      */
     private $name;
 
+    /**
+     * Product constructor.
+     * @param $name
+     */
     public function __construct($name)
     {
         $this->name = $name;
         $this->status = ProductStatus::SUSPENDED;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
@@ -39,6 +52,14 @@ class Product
     {
         $this->name = $name;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
@@ -55,7 +76,7 @@ class Product
      */
     public function resume()
     {
-        if ($this->status == ProductStatus::DELETED) {
+        if ($this->getStatus() == ProductStatus::DELETED) {
             throw new \Exception('A deleted product cannot be resumed');
         }
 
@@ -69,7 +90,7 @@ class Product
      */
     public function suspend()
     {
-        if ($this->status == ProductStatus::DELETED) {
+        if ($this->getStatus() == ProductStatus::DELETED) {
             throw new \Exception('A deleted product cannot be suspended');
         }
 
