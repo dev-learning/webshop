@@ -4,41 +4,46 @@ namespace AppBundle\Entity;
 
 class ProductTest extends \PHPUnit_Framework_TestCase
 {
-    public function testIfPriceReturnsATrueFormattedPrice()
+    public function testNewProductsAreSuspended()
     {
-        $price = (new Product())->setPrice(4)->getPrice();
-        self::assertEquals(4.00, $price);
-
-        $price = (new Product())->setPrice('4,54')->getPrice();
-        self::assertEquals(4.54, $price);
-
-        $price = (new Product())->setPrice('4.54')->getPrice();
-        self::assertEquals(4.54, $price);
+        self::assertEquals('suspended', (new Product())->getStatus());
     }
 
-    public function testIfSalePriceReturnsATrueFormattedSalePrice()
+    public function testSuspendedProductsCanBeResumed()
     {
-        $price = (new Product())->setSalePrice(4)->getSalePrice();
-        self::assertEquals(4.00, $price);
-
-        $price = (new Product())->setSalePrice('4,54')->getSalePrice();
-        self::assertEquals(4.54, $price);
-
-        $price = (new Product())->setSalePrice('4.54')->getSalePrice();
-        self::assertEquals(4.54, $price);
+        $suspendedProduct = new Product();
+        self::assertEquals('online', $suspendedProduct->resume()->getStatus());
     }
 
-    public function testIfSalePriceIsBiggerThanNullAndSmallerOrEqualsPrice()
+    public function testOnlineProductsCanBeSuspended()
     {
-        $normalPrice = (new Product())->setPrice(4.95)->getPrice();
-        $salePrice = (new Product())->setSalePrice(4.95)->getSalePrice();
-        self::assertEquals($normalPrice, $salePrice);
+        $onlineProduct = (new Product())->resume();
+        self::assertEquals('suspended', $onlineProduct->suspend()->getStatus());
+    }
 
-        $salePrice = (new Product())->setSalePrice(4.95)->getSalePrice();
-        self::assertFalse($salePrice);
+    public function testSuspendedProductsCanBeDeleted()
+    {
+        $suspendedProduct = new Product();
+        self::assertEquals('deleted', $suspendedProduct->delete()->getStatus());
+    }
 
-        $normalPrice = (new Product())->setPrice(4.94)->getPrice();
-        $salePrice = (new Product())->setSalePrice(4.95)->getSalePrice();
-        self::assertGreaterThanOrEqual($normalPrice, $salePrice);
+    public function testOnlineProductsCanBeDeleted()
+    {
+        $onlineProduct = (new Product())->resume();
+        self::assertEquals('deleted', $onlineProduct->delete()->getStatus());
+    }
+
+    public function testDeletedProductsCannotBeResumed()
+    {
+        self::setExpectedException(\Exception::class, 'A deleted product cannot be resumed');
+        $deletedProduct = (new Product())->delete();
+        $deletedProduct->resume();
+    }
+
+    public function testDeletedProductsCannotBeSuspended()
+    {
+        self::setExpectedException(\Exception::class, 'A deleted product cannot be suspended');
+        $deletedProduct = (new Product())->delete();
+        $deletedProduct->suspend();
     }
 }
