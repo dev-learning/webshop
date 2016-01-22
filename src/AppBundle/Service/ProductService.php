@@ -26,8 +26,7 @@ class ProductService
      */
     public function store(Product $product)
     {
-        $this->em->persist($product);
-        $this->em->flush();
+        $this->save($product);
     }
 
     /**
@@ -36,8 +35,7 @@ class ProductService
     public function delete(Product $product)
     {
         $product->delete();
-        $this->em->persist($product);
-        $this->em->flush();
+        $this->save($product);
     }
 
     /**
@@ -47,8 +45,7 @@ class ProductService
     public function resume(Product $product)
     {
         $product->resume();
-        $this->em->persist($product);
-        $this->em->flush();
+        $this->save($product);
     }
 
     /**
@@ -58,6 +55,14 @@ class ProductService
     public function suspend(Product $product)
     {
         $product->suspend();
+        $this->save($product);
+    }
+
+    /**
+     * @param Product $product
+     */
+    private function save(Product $product)
+    {
         $this->em->persist($product);
         $this->em->flush();
     }
