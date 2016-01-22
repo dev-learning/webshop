@@ -7,7 +7,6 @@ class ProductTest extends \PHPUnit_Framework_TestCase
     public function testSuspendedProductsCanBeResumed()
     {
         $suspendedProduct = new Product('testproduct');
-        var_dump($suspendedProduct->resume()->getStatus());
         self::assertEquals('online', $suspendedProduct->resume()->getStatus());
     }
 

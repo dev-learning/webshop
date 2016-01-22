@@ -12,16 +12,54 @@ class ProductService
      */
     private $em;
 
+    /**
+     * ProductService constructor.
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
     }
 
-    public function persist(Product $entity)
+    /**
+     * @param Product $product
+     */
+    public function store(Product $product)
     {
-        $this->em->persist($entity);
+        $this->em->persist($product);
         $this->em->flush();
     }
 
+    /**
+     * @param Product $product
+     */
+    public function delete(Product $product)
+    {
+        $product->delete();
+        $this->em->persist($product);
+        $this->em->flush();
+    }
+
+    /**
+     * @param Product $product
+     * @throws \Exception
+     */
+    public function resume(Product $product)
+    {
+        $product->resume();
+        $this->em->persist($product);
+        $this->em->flush();
+    }
+
+    /**
+     * @param Product $product
+     * @throws \Exception
+     */
+    public function suspend(Product $product)
+    {
+        $product->suspend();
+        $this->em->persist($product);
+        $this->em->flush();
+    }
 
 }
