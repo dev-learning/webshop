@@ -66,5 +66,4 @@ class ProductService
         $this->em->persist($product);
         $this->em->flush();
     }
-
 }

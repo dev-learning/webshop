@@ -23,10 +23,10 @@ class ProductController extends Controller
     }
 
     /**
-     * @param Product $product
+     * @param $name
      */
-    public function createAction(Product $product)
+    public function createAction($name)
     {
-        $this->productService->store($product);
+        $this->productService->store(new Product($name));
     }
 }
