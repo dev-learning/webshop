@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\ValueObject\ProductFromAdmin;
+
 class ProductTest extends \PHPUnit_Framework_TestCase
 {
     public function testSuspendedProductsCanBeResumed()
@@ -45,5 +47,15 @@ class ProductTest extends \PHPUnit_Framework_TestCase
     public function testIfNameCanBeSetInConstructor()
     {
         self::assertEquals('testproduct', (new Product('testproduct'))->getName());
+    }
+
+    public function testInstantiateFromAdminReturnsNewProduct()
+    {
+        $product = new Product('test');
+        $productFromAdmin = new ProductFromAdmin();
+        $productFromAdmin->name = 'test';
+        $instantiatedProduct = Product::instantiateFromAdmin($productFromAdmin);
+
+        self::assertEquals($instantiatedProduct, $product);
     }
 }

@@ -4,29 +4,35 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Product;
 use AppBundle\Service\ProductService;
+use AppBundle\ValueObject\ProductFromAdmin;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\Request;
 
 class ProductController extends Controller
 {
     /**
-     * @var ProductService
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    private $productService;
-
-    /**
-     * ProductController constructor.
-     * @param ProductService $productService
-     */
-    public function __construct(ProductService $productService)
+    public function createAction(Request $request)
     {
-        $this->productService = $productService;
-    }
+        $productData = new ProductFromAdmin();
 
-    /**
-     * @param $name
-     */
-    public function createAction($name)
-    {
-        $this->productService->store(new Product($name));
+        $form = $this->createFormBuilder($productData)
+            ->add('name', TextType::class)
+            ->add('save', SubmitType::class, ['label' => 'Maak product aan'])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $product = Product::instantiateFromAdmin($productData);
+            $productService = new ProductService($this->getDoctrine()->getManager());
+            $productService->store($product);
+        }
+
+        return $this->render('AppBundle:admin:productStore.html.twig', ['form' => $form->createView()]);
     }
 }

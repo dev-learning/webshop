@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\ValueObject\ProductFromAdmin;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -42,6 +43,15 @@ class Product
     {
         $this->name = $name;
         $this->status = ProductStatus::SUSPENDED;
+    }
+
+    /**
+     * @param ProductFromAdmin $data
+     * @return Product
+     */
+    public static function instantiateFromAdmin(ProductFromAdmin $data)
+    {
+        return new self($data->name);
     }
 
     /**
