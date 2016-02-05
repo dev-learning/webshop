@@ -10,7 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 
-class ProductController extends Controller
+
+class ProductController extends Controller implements TokenAuthenticatedController
 {
     /**
      * @param Request $request

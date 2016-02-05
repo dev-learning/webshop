@@ -1,2 +1,6 @@
-# Learn more about services, parameters and containers at
-# http://symfony.com/doc/current/book/service_container.html
+services:
+    app.tokens.action_listener:
+        class: AppBundle\EventListener\TokenListener
+        arguments: ['%tokens%']
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
