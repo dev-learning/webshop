@@ -6,34 +6,60 @@ use AppBundle\Entity\Product;
 use AppBundle\Service\ProductService;
 use AppBundle\ValueObject\ProductFromAdmin;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\Encoder\JsonEncode;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 
-class ProductController extends Controller implements TokenAuthenticatedController
+class ProductController extends Controller
 {
     /**
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @var ProductService
      */
-    public function createAction(Request $request)
+    private $productService;
+
+    /**
+     * @var EngineInterface
+     */
+    private $templateEngine;
+
+    /**
+     * ProductController constructor.
+     * @param ProductService $productService
+     * @param EngineInterface $templateEngine
+     */
+    public function __construct(ProductService $productService, EngineInterface $templateEngine)
     {
-        $productData = new ProductFromAdmin();
+        $this->productService = $productService;
+        $this->templateEngine = $templateEngine;
+    }
 
-        $form = $this->createFormBuilder($productData)
-            ->add('name', TextType::class)
-            ->add('save', SubmitType::class, ['label' => 'Maak product aan'])
-            ->getForm();
+    public function showAction()
+    {
+        $serializer = new Serializer([new ObjectNormalizer()], [new JsonEncode()]);
+        $data = $this->productService->getAll();
+        $jsonData = $serializer->serialize($data, 'json');
 
-        $form->handleRequest($request);
+        return $this->templateEngine->renderResponse(
+            'AppBundle:admin:productList.html.twig',
+            array('products' => $jsonData)
+        );
+    }
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $product = Product::instantiateFromAdmin($productData);
-            $productService = new ProductService($this->getDoctrine()->getManager());
-            $productService->store($product);
-        }
+    public function createAction()
+    {
+        $productFromAdmin = new ProductFromAdmin();
+        $productData = Product::instantiateFromAdmin($productFromAdmin);
+//        $productData = new ProductFromAdmin();
+//        $productData->name = 'Wat NU?';
 
-        return $this->render('AppBundle:admin:productStore.html.twig', ['form' => $form->createView()]);
+        return $this->templateEngine->renderResponse(
+            'AppBundle:admin:productStore.html.twig',
+            array('product' => $productData)
+        );
     }
 }

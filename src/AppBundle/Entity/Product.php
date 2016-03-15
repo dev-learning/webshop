@@ -31,7 +31,7 @@ class Product
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=100, unique=true)
+     * @ORM\Column(type="string", length=100)
      */
     private $name;
 

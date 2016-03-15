@@ -1,3 +1,7 @@
 productStore:
-    path:      /admin/product/store
-    defaults:  { _controller: AppBundle:Product:create, service: AppBundle:ProductController }
+    path:      /
+    defaults:  { _controller: app.product_controller:showAction }
+
+productStore:
+    path:      /create
+    defaults:  { _controller: app.product_controller:createAction }
